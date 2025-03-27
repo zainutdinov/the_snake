@@ -66,7 +66,9 @@ def handle_keys(game_object):
 class GameObject:
     """Базовый класс для игровых обьектов."""
 
-    def __init__(self, body_color=None, border_color=None):
+    def __init__(self,
+                 body_color=None,
+                 border_color=None):
         self.position = SCREEN_CENTER
         self.body_color = body_color
         self.border_color = border_color
@@ -88,9 +90,12 @@ class Apple(GameObject):
     отрисовки на игровом поле. Наследуется от класса GameObject.
     """
 
-    def __init__(self, body_color=APPLE_COLOR, border_color=BORDER_COLOR):
+    def __init__(self,
+                 body_color=APPLE_COLOR,
+                 border_color=BORDER_COLOR,
+                 taken_positions=(SCREEN_CENTER,)):
         super().__init__(body_color, border_color)
-        self.taken_positions = (SCREEN_CENTER,)
+        self.taken_positions = taken_positions
         self.randomize_position(self.taken_positions)
 
     def draw(self) -> None:
@@ -115,7 +120,9 @@ class Snake(GameObject):
     Наследуется от класса GameObject.
     """
 
-    def __init__(self, body_color=SNAKE_COLOR, border_color=BORDER_COLOR):
+    def __init__(self,
+                 body_color=SNAKE_COLOR,
+                 border_color=BORDER_COLOR):
         super().__init__(body_color, border_color)
         self.length = SNAKE_START_LENGTH
         self.positions = [self.position]
@@ -124,7 +131,7 @@ class Snake(GameObject):
 
     def draw(self) -> None:
         """Метод отрисовки обьекта Змейка на игровом поле."""
-        for position in self.positions[:-1]:
+        for position in self.positions:
             self.draw_cell(position)
 
     def update_direction(self) -> None:
@@ -146,6 +153,8 @@ class Snake(GameObject):
             (current_y + dy * GRID_SIZE) % SCREEN_HEIGHT
         )
         self.positions.insert(0, next_head_position)
+        if len(self.positions) > self.length:
+            self.positions.pop()
 
     def get_head_position(self) -> Tuple[int, int]:
         """Метод возвращает позицию головы змейки."""
@@ -174,10 +183,9 @@ def main():
             apple.randomize_position(snake.positions)
         elif snake.get_head_position() in snake.positions[2:]:
             snake.reset()
+            apple.randomize_position(snake.positions)
         apple.draw()
         snake.draw()
-        if len(snake.positions) != snake.length:
-            snake.positions.pop()
         pg.display.update()
 
 

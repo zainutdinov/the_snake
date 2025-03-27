@@ -95,8 +95,7 @@ class Apple(GameObject):
                  border_color=BORDER_COLOR,
                  taken_positions=(SCREEN_CENTER,)):
         super().__init__(body_color, border_color)
-        self.taken_positions = taken_positions
-        self.randomize_position(self.taken_positions)
+        self.randomize_position(taken_positions)
 
     def draw(self) -> None:
         """Метод отрисовки обьекта Яблоко на игровом поле."""
